@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>demo</title>
+  <style>
+    .spanCla {
+      display: inline-block;
+      height: 30px;
+      width: 200px;
+      border: solid red 1px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    订阅视图-1：<input class="box-1"></input>
+    订阅视图-2：<span class="spanCla" contenteditable="true" class="box-2"></span>
+
+    <!-- <button v-on:click="btn">查看</button> -->
+    <!-- <p>显示内容：{{kk}}</p> -->
+  </div>
+  <script src="test.js"></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> -->
+  <script>
+    // 数据
+    var dataObj = {};
+    // 数据劫持
+    dataHijack({
+      data: dataObj,
+      tag: 'view-1',
+      datakey: 'one',
+      selector: '.box-1'
+    });
+    dataHijack({
+      data: dataObj,
+      tag: 'view-2',
+      datakey: 'two',
+      selector: '.box-2'
+    });
+    // 初始化赋值
+    dataObj.one = 'one';
+    dataObj.two = 'two';
+  </script>
+
+  <!-- <script>
+    let VM = new Vue({
+      data() {
+        return {
+          kk: '',
+        }
+      },
+      methods: {
+        btn() {
+          // this.kk = dataObj.one
+          console.log('vue==', this.kk)
+        }
+      },
+      mounted() {
+
+      },
+    })
+  </script> -->
+</body>
+
+</html>
+<!-- ————————————————
+版权声明：本文为CSDN博主「欧阳呀」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_35942348/article/details/102876974 -->

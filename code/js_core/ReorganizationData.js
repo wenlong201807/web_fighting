@@ -34,7 +34,7 @@ Array.from(hh).map(item => {
 })
 
 console.log('最后结果',arr2)
-
+// ReorganizationData
 // arr3 = arr2.map(item => {
 //   // console.log(item.child)
 //   // let kk = item.child.split('---')

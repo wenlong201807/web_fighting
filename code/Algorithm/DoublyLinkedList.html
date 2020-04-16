@@ -7,6 +7,22 @@
 </head>
 <body>
   <h1>双向链表</h1>
+  <h2>双向链表常见的操作</h2>
+  <ul>
+    <li>append(element) : 向列表尾部添加一个新的项</li>
+    <li>insert(position,element):向列表的特定位置插入一个新的项</li>
+    <li>get(position) : 获取对应位置的元素</li>
+    <li>indexOf(element) : 返回元素在列表中的索引，如果列表中没有该元素，则返回-1</li>
+    <li>update(position,element) : 修改某个位置的元素</li>
+    <li>removeAt(position) : 从列表中的特点位置移除一项</li>
+    <li>remove(element) : 从列表中移除一项</li>
+    <li>isEmpty() : 如果链表中不包含任何元素，返回true，如果链表长度大于0，则返回false</li>
+    <li>size() : 返回聊表包含的元素个数，与数组的length属性类似</li>
+    <li>toString() : 由于列表项使用了node类，就需要重写继承自js对象默认的toString方法，让其只输出元素的值</li>
+    <li>forwardString() : 返回正向遍历的节点字符串形式</li>
+    <li>backwordString() : 返回反向遍历的节点字符串形式</li>
+   
+  </ul>
   <script src="DoublyLinkedList.js"></script>
 </body>
 </html>

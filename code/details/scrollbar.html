@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>div自定义滚动条宽度</title>
+  <style>
+    .warp {
+      height: 300px;
+      width: 400px;
+      overflow: auto;
+    }
+
+    .warp::-webkit-scrollbar {
+      width: 2px;
+      height: 5px;
+      background: red;
+    }
+
+    .inner {
+      border: 1px solid #ccc;
+      height: 400px;
+      width: 500px;
+    }
+
+    /* 
+    CSS3自定义滚动条样式 -webkit-scrollbar
+    https://blog.csdn.net/hanshileiai/article/details/40398177?depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4&utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4
+     */
+  </style>
+</head>
+
+<body>
+  <div class="warp">
+    我是外部div
+    <br>
+    <a
+      href="https://blog.csdn.net/hanshileiai/article/details/40398177?depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4&utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-4">
+      CSS3自定义滚动条样式 -webkit-scrollbar
+    </a>
+    <div class="inner">
+      我是内部div
+    </div>
+  </div>
+</body>
+
+</html>

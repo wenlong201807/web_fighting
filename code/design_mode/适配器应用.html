@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>适配器应用</title>
+</head>
+
+<body>
+  <h1>适配器应用</h1>
+  <script>
+    var getBeigingCity = (function () {
+      var beijingCity = [{
+          name: '朝阳',
+          id: 11
+        },
+        {
+          name: '海淀',
+          id: 12
+        },
+        {
+          name: '大秦',
+          id: 13
+        },
+      ]
+      return beijingCity
+    })()
+
+    var render = function (fn) {
+      console.log('开始渲染北京市地图')
+      document.write(JSON.stringify(fn))
+    }
+
+    var addressAdpater = function (oldAddressfn) {
+      var address = {}
+      oldAddressfn.forEach(function (c) {
+        address[c.name] = c.id
+      })
+      return address
+    }
+
+    // render(getBeigingCity)//原有数据模式展示
+    render(addressAdpater(getBeigingCity)) // 改变需求之后的适配
+  </script>
+</body>
+
+</html>

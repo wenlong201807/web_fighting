@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>单例模式2</title>
+  <style>
+    .show {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #ccc;
+      display: block;
+    }
+
+    .hide {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>弹窗</h1>
+  <button id="open">打开</button>
+  <button id="delete">关闭</button>
+  <script>
+    var Model = function (id, html) {
+      this.id = id
+      this.html = html
+      this.open = false
+    }
+    Model.prototype.create = function () {
+      if (!this.open) {
+        var model = document.createElement('div')
+        model.innerHTML = this.html
+        model.id = this.id
+        document.body.appendChild(model)
+        this.open = true
+        model.classList.add('show')
+      }
+    }
+    Model.prototype.delete = function () {
+      if (this.open) {
+        var model = document.getElementById(this.id)
+        document.body.removeChild(model)
+        model.classList.add('hide')
+        this.open = false
+      }
+    }
+
+    var createInstance = (function () {
+      var instance
+      return function () {
+        // 单例模式重点
+        // return instance = new Model('model', '我是一个弹框')
+        return instance || (instance = new Model('model', '我是一个弹框'))
+      }
+    })()
+
+    var operate = {
+      setModel: null,
+      open: function () {
+        this.setModel = createInstance() // 实例化对象
+        this.setModel.create()
+        
+      },
+      delete: function () {
+        // 如果有弹窗，就干掉
+        this.setModel ? this.setModel.delete() : ''      
+      }
+    }
+
+    document.getElementById('open').onclick = function () {
+      operate.open()
+    }
+    document.getElementById('delete').onclick = function () {
+      operate.delete()
+    }
+  </script>
+</body>
+
+</html>

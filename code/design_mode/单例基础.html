@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>单例模式</title>
+</head>
+<body>
+  
+  <h1>单例模式</h1>
+  <script>
+    var zhangsan = (function (){
+      var zhangsan = function(msg){
+        this.menling = msg
+      }
+      var men
+      var info = {
+        sendMessage:function(message){
+          if(!men){
+            men = new zhangsan(message)
+          }
+          return men
+        }
+      }
+      return info
+    })()
+
+    // console.log(zhangsan(666))
+
+    var lisi = {
+      callZhangsan(msg){
+        var _zhangsan = zhangsan.sendMessage(msg)
+        alert(_zhangsan.menling)
+        _zhangsan = null // 用完就回收
+      }
+    }
+
+    lisi.callZhangsan('叮咚。。。')
+  </script>
+</body>
+</html>

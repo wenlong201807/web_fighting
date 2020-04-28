@@ -11,7 +11,9 @@ const { port, viewDir, staticDir } = require('./config')
 const co = require('co')
 const app = new Koa()
 const serve = require('koa-static')
+const { historyApiFallback } = require('koa2-connect-history-api-fallback')
 app.use(serve(staticDir))
+app.use(historyApiFallback({ index: '/', whiteList: ['/api'] })) // 开启前后端混合接口模式，刷新不丢失页面
 
 // 后端渲染html模式
 app.context.render = co.wrap(render({
@@ -20,7 +22,7 @@ app.context.render = co.wrap(render({
   cache: process.env.NODE_ENV == "development" ? false : 'memory',
   ext: 'html',//渲染文件的后缀
   writeBody: false,
-  varControls:["[[","]]"]
+  varControls: ["[[", "]]"]
   // local: locals,
   // filters: filters,
   // tags: tags,
@@ -31,5 +33,5 @@ app.context.render = co.wrap(render({
 require("./controllers/index")(app)
 
 app.listen(port, () => {
-  console.log(`服务启动成功：localhost://${port}`)
+  console.log(`服务启动成功：http://localhost:${port}`)
 })

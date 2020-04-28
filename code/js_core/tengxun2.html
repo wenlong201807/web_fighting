@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <h1>作用域</h1>
+  <script>
+    var a = 1
+
+    function fn1() {
+      alert(a+77) // undefined
+      var a = 2
+    }
+    fn1()
+    alert(a+666) // 1
+
+    /**
+     * 1.预解析
+     * a = undefined
+     * function fn1() {
+         alert(a) // undefined
+         var a = 2
+       }
+
+       2.逐行执行js
+
+    */
+
+    /**
+     * 考点：作用域链
+    */
+  </script>
+</body>
+
+</html>

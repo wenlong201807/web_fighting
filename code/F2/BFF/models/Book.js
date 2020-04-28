@@ -24,7 +24,11 @@ class Books {
    * getData(options)
   */
   getData (options) {
-    return Promise.resolve("数据请求成功66")
+    return Promise.resolve({
+      result: "数据请求成功66",
+      status:200
+    })
+    // return Promise.resolve("数据请求成功66")
   }
 }
 

@@ -77,7 +77,7 @@ function calculate (s) {
 
 }
 
-const s = '54+9/3'
+const s = '54+9/3*2'
 console.log(calculate(s))
 
 

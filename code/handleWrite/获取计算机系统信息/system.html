@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+<a href="https://www.jb51.net/article/45330.htm">JS获取计算机mac地址以及IP的实现方法</a>
+<br>
+<a href="https://www.jb51.net/article/45129.htm">JavaScript获取客户端计算机硬件及系统等信息的方法</a>
+  <!-- //这两个是系统里的ActiveX插件   用来获取ip以及物理地址 -->
+  <OBJECT id=locator classid=CLSID:76A64158-CB41-11D1-8B02-00600806D9B6 VIEWASTEXT> </OBJECT>
+  <OBJECT id=foo classid=CLSID:75718C9A-F029-11d1-A1AC-00C04FB6C223> </OBJECT>
+  <SCRIPT language=JScript event=OnObjectReady(objObject,objAsyncContext) for=foo>
+    if (objObject.IPEnabled != null && objObject.IPEnabled != "undefined " && objObject.IPEnabled == true) {
+      if (objObject.MACAddress != null && objObject.MACAddress != "undefined ")
+        MACAddr = objObject.MACAddress;
+      if (objObject.IPEnabled && objObject.IPAddress(0) != null && objObject.IPAddress(0) != "undefined ")
+        IPAddr = objObject.IPAddress(0);
+      if (objObject.DNSHostName != null && objObject.DNSHostName != "undefined ")
+        sDNSName = objObject.DNSHostName;
+
+    }
+  </SCRIPT>
+  <SCRIPT language=JScript>
+    var service = locator.ConnectServer();
+    var MACAddr;
+    var IPAddr;
+    var DomainAddr;
+    var sDNSName;
+    service.Security_.ImpersonationLevel = 3;
+    service.InstancesOfAsync(foo, 'Win32_NetworkAdapterConfiguration ');
+  </SCRIPT>
+  <SCRIPT language=JScript event="OnCompleted(hResult,pErrorObject,   pAsyncContext) " for=foo>
+    alert("物理地址" + MACAddr + "IP地址" + IPAddr + "主机名" + sDNSName)
+  </SCRIPT> "
+</body>
+
+</html>

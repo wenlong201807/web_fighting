@@ -50,3 +50,5 @@ const values = [3, 4, 5],
   capacity = 6;
 
 console.log('背包结果:', knapSackGreedy(capacity, weights, values))
+// 18192641189
+

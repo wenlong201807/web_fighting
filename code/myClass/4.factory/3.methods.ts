@@ -66,7 +66,7 @@ class Factory {
 }
 
 // 工厂方法模式应用于react中
-function createElement(type: any, config: any) {
+function createElement(type: any, config: any) { // 柯里化
   // this绑定为null，第一个参数绑定为type
   return {type,props:config}
 }
@@ -75,7 +75,7 @@ function createFactory(type: string) {
   const factory = createElement.bind(null,type) // 此处不需要this，可以写null，或者其他都行，
   return factory
 }
-
+ 
 let factory = createFactory('h1')
 let element = factory({id:'h1',className:'title'})
 console.log(element)

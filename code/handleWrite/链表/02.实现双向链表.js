@@ -1,5 +1,120 @@
 // 参考资料  https://www.cnblogs.com/greatluoluo/p/6308828.html
+function LinkedList () {
+  //先创建一个节点
+  function Node (element) {
+    this.element = element;
+    this.next = null;
+  }
+  this.head = null;
+  this.length = 0;
 
+  //通过对一个方法append判断就可以知道是否设置了prototype
+  if ((typeof this.append !== 'function') && (typeof this.append !== 'string')) {
+    //添加元素
+    LinkedList.prototype.append = function (element) {
+      var node = new Node(element);
+      var current;
+
+      if (this.head == null) {
+        this.head = node;
+      } else {
+        current = this.head;
+        while (current.next != null) {
+          current = current.next;
+        }
+        current.next = node;
+      }
+      this.length++;
+    };
+
+    //插入元素，成功true，失败false
+    LinkedList.prototype.insert = function (position, element) {
+      if (position > -1 && position < this.length) {
+        var current = this.head;
+        var node = new Node(element);
+        var previous;
+        var index = 0;
+        if (position == 0) {
+          node.next = current;
+          this.head = node;
+        } else {
+          while (index++ < position) {
+            previous = current;
+            current = current.next;
+          }
+          node.next = current;
+          previous.next = node;
+        }
+        this.length++;
+        return true;
+      } else {
+        return false;
+      }
+    };
+
+    //根据位置删除指定元素，成功 返回元素， 失败 返回null
+    LinkedList.prototype.removeAt = function (position) {
+      if (position > -1 && position < this.length) {
+        var current = this.head;
+        var previous = null;
+        var index = 0;
+
+        if (position == 0) {
+          this.head = current.next;
+        } else {
+          while (index++ < position) {
+            previous = current;
+            current = current.next;
+          }
+          previous.next = current.next;
+        }
+        this.length--;
+        return current.element;
+      } else {
+        return null;
+      }
+    };
+
+    //根据元素删除指定元素，成功 返回元素， 失败 返回null
+    LinkedList.prototype.remove = function (element) {
+      var index = this.indexOf(element);
+      return this.removeAt(index);
+    };
+
+    //返回给定元素的索引，如果没有则返回-1
+    LinkedList.prototype.indexOf = function (element) {
+      var current = this.head;
+      var index = 0;
+      while (current) {
+        if (current.element === element) {
+          return index;
+        }
+        current = current.next;
+        index++;
+      }
+      return -1;
+    };
+
+    LinkedList.prototype.isEmpty = function () {
+      return this.length === 0;
+    };
+    LinkedList.prototype.size = function () {
+      return this.length;
+    };
+    LinkedList.prototype.toString = function () {
+      var string = '';
+      var current = this.head;
+      while (current) {
+        string += current.element;
+        current = current.next;
+      }
+      return string;
+    };
+    LinkedList.prototype.getHead = function () {
+      return this.head;
+    };
+  }
+}
 /**
  * 创建双向链表
  * 在双向链表中,链接是双向的:一个链向下一个元素, 另一个链向前一个元素。
@@ -116,3 +231,14 @@ function DoublyLinkedList () {
   };
 }
 inheritPrototype(DoublyLinkedList, LinkedList);
+
+var doublyList = new DoublyLinkedList();
+// console.log(doublyList.isEmpty()); //true;
+    doublyList.append('huang');
+    doublyList.append('du')
+    doublyList.insert(1, 'cheng');
+    console.log(doublyList.toString()); //huangchengdu
+    // console.log(doublyList.indexOf('du')); //2
+    // console.log(doublyList.size()); //3
+    console.log(doublyList.removeAt(2)); //du
+    console.log(doublyList.toString()); //huangcheng

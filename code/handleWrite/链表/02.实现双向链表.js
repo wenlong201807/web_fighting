@@ -36,7 +36,7 @@ function DoublyLinkedList () {
       var current = this.head;
       var previous;
       var index = 0;
-      if (position === 0) {
+      if (position === 0) { // 插入到第一个位置
         if (!this.head) {
           this.head = node;
           this.tail = node;
@@ -45,22 +45,23 @@ function DoublyLinkedList () {
           current.prev = node;
           this.head = node;
         }
-      } else if (position == this.length) {
+      } else if (position == this.length) { // 插入到最后一个位置
         current = this.tail;
         current.next = node;
         node.prev = current;
         this.tail = node;
-      } else {
-        while (index++ < position) {
+      } else { // 插入到中间任意一个位置
+        while (index++ < position) { // 依次遍历，查找到指定的位置
           previous = current;
           current = current.next;
         }
+        // 重新赋值新节点
         previous.next = node;
         node.next = current;
         current.prev = node;
         node.prev = previous;
       }
-      this.length++;
+      this.length++; // 所有的插入操作，都是新增一个节点，长度必然加一
       return true;
     } else {
       return false;
@@ -69,10 +70,10 @@ function DoublyLinkedList () {
   this.append = function (element) {
     var node = new Node(element);
     var current;
-    if (this.head === null) {
+    if (this.head === null) {  // 原链表是否为空
       this.head = node;
       this.tail = node;
-    } else {
+    } else { // 原链表不为空时，新节点追加到最后一个
       current = this.head;
       while (current.next !== null) {
         current = current.next;
@@ -83,23 +84,23 @@ function DoublyLinkedList () {
     }
     this.length++;
   };
-  this.removeAt = function (position) {
-    if (position > -1 && position < this.length) {
+  this.removeAt = function (position) { // 删除任意一个位置的节点
+    if (position > -1 && position < this.length) { // 删除的节点，在节点范围内
       var current = this.head;
       var previous;
       var index = 0;
-      if (position === 0) {
+      if (position === 0) { // 删除第一个
         this.head = current.next;
         if (this.length === 1) {
           this.tail = null;
         } else {
           this.head.prev = null;
         }
-      } else if (position === (this.length - 1)) {
+      } else if (position === (this.length - 1)) { // 删除最后一个
         current = this.tail;
         this.tail = current.prev;
         this.tail.next = null;
-      } else {
+      } else { // 删除其他指定位置节点
         while (index++ < position) {
           previous = current;
           current = current.next;
@@ -107,7 +108,7 @@ function DoublyLinkedList () {
         previous.next = current.next;
         current.next.prev = previous;
       }
-      this.length--;
+      this.length--; // 删除掉一个节点，自然长度减一
       return current.element;
     } else {
       return false;

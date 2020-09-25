@@ -1,3 +1,83 @@
+
+
+// 观察者，小名：发布订阅   有观察者和被观察者
+
+class Dep {
+  constructor() {
+    this.subs = [] // 存放所有的Watcher
+  }
+  addSub (watcher) { // 添加 watcher
+    this.subs.push(watcher)
+  }
+  // 发布
+  notify () {
+    this.subs.forEach(watcher => {
+      watcher.update()
+    })
+  }
+}
+class Watcher {
+  constructor(vm, expr, cb) {
+    this.vm = vm
+    this.expr = expr
+    this.cb = cb
+    // 默认先厨房一个老值
+    this.oldValue = this.get()
+  }
+  get () {// vm.$data.school vm.$data.school.name
+    Dep.target = this // 先把自己放在this上
+    let value = CompileUtil.getValue(this.vm, this.expr)
+    Dep.target = null // 不取消 任何值取值 都会给添加上 watcher
+    return value
+  }
+  update () {
+    // 更新操作 数据变化后 会调用观察者的update方法
+    let newVal = CompileUtil.getValue(this.vm, this.expr)
+    if (newVal !== this.oldValue) {
+      this.cb(newVal)
+    }
+  }
+}
+
+// vm.$watch(vm, 'school.name', (newVal) => {
+
+// })
+
+class Observer { // 实现数据劫持功能
+  constructor(data) {
+    // console.log(data) // {school: {…}} // 对应data里面定义的所以内容，
+    this.observer(data)
+  }
+  observer (data) {
+    // 如果是对象才观察
+    if (data && typeof data === 'object') {
+      // 如果是对象
+      for (let key in data) {
+        this.defineReactive(data, key, data[key])
+      }
+    }
+  }
+  defineReactive (obj, key, value) {
+    this.observer(value) // 递归调用，使每一层都是响应式的 // school:[watcher,watcher] b:[watcher,watcher]
+    // 以上监听，为每一个属性都加上各自的观察者，每个变化，都只是更新自己的，而不是全部更新【优化点】
+    let dep = new Dep() // 给每一个属性 都加上一个具有发布订阅的功能
+    Object.defineProperty(obj, key, {
+      get () {
+        // 创建watcher 时，会取到对应的内容，并且把watcher放到了全局上
+        Dep.target && dep.addSub(Dep.target)
+        return value
+      },
+      set: (newValue)=> { // {{school:{name:'文龙'}}}  // school = {} // 赋值一个对象时再扩展
+        if (newValue !== value) { // 小小优化:新值与老值不相等时，才重新赋值  
+          this.observer(newValue) // 递归调用，赋值引用类型时，也是响应式的，限于对象，数组没有此功能
+          value = newValue
+          dep.notify()
+        }
+      }
+    })
+  }
+}
+
 // 基类  调度
 
 class Compiler {
@@ -24,26 +104,28 @@ class Compiler {
     // console.log( attributes) // NamedNodeMap {0: type, 1: v-model, type: type, v-model: v-model, length: 2}
     Array.from(attributes).forEach(attr => {
       // console.log(attr) // typpe="text" v-model="school.name" ...
-      let { name, value:expr } = attr 
+      let { name, value: expr } = attr
       // console.log(name, value) // type text  ,  v-model school.name
       // 判断是不是指令
       if (this.isDirective(name)) {
         // console.log(node) // <input type="text" v-model="school.name">
-        let [,directive] = name.split('-')
+        let [, directive] = name.split('-')
         // 需要调用不同的指令来处理
-        CompileUtil[directive](node,expr,this.vm)
+        CompileUtil[directive](node, expr, this.vm)
       }
     })
-}
+  }
   // 编译文本的
   compileText (node) {
     // 判断当前文本节点中内容是否包含  {{xxx}} {{aaa}}
     let content = node.textContent
     // console.log(content) // {{school.name}}   {{school.age}}
-    if (/\{\{(.+?)\}\}/.test(content)){
+    if (/\{\{(.+?)\}\}/.test(content)) {
       // console.log('text:',content) // 找到所有的文本  比如:text: {{school.name}}
+      // 文本节点
+      CompileUtil['text'](node, content, this.vm) // {{a}} , {{b}}
     }
-    
+
   }
   compile (node) {
     // 用来编译内存中的dom节点
@@ -79,28 +161,66 @@ CompileUtil = {
   getValue (vm, expr) { // vm.$data 'school.name' [school,name]
     return expr.split('.').reduce((data, current) => {
       return data[current]
-    },vm.$data)
+    }, vm.$data)
   },
+  setValue (vm, expr, value) { // vm.$data  'school.name' = 文龙
+    expr.split('.').reduce((data, current, index, arr) => {
+      if (index === arr.length - 1) {
+        return data[current] = value
+      }
+      return data[current]
+    },vm.$data)
+    // 更新访问方式  原来访问方式是: vm.$data.school    现在变成 vm.school  即可  去掉了  $data这一层
+  },
+  // 解析v-model这个指令 // 视图更新则数据更新
   model (node, expr, vm) {
     // node是节点，expr是表达式，vm是当前实例，  // school.name  vm.$data
     // 给输入框赋予value属性，node.value = xxx
     let fn = this.updater['modelUpdater']
-    let value = this.getValue(vm,expr)
+    // 给输入框加一个观察者 如果稍后数据更新了，会触发此方法，会拿新值 给输入框赋值
+    new Watcher(vm, expr, newVal => {
+      fn(node, newVal)
+    })
+    node.addEventListener('input', e => {
+      let value = e.target.value // 获取用户输入的内容
+      this.setValue(vm,expr,value)
+    })
+    let value = this.getValue(vm, expr) // 文龙
     // console.log(node,expr,vm)
-    fn(node,value)
+    fn(node, value)
   },
   html () {
     // node.innerHTML = xxx
   },
-  text () {
-    
+  getContentValue (vm, expr) {
+    // 遍历表达式 将内容  重新替换成一个完整的内容 返回回去
+    return expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+      // console.log(args)
+      return this.getValue(vm, args[1])
+    })
+  },
+  text (node, expr, vm) { // expr => {{a}}  {{b}} {{c}}
+    let fn = this.updater['textUpdater']
+    let content = expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+      // console.log(args) // ["{{school.age}}", "school.age", 0, "{{school.age}}"]
+      // 给表达式每 {{}} 都加上观察者
+      new Watcher(vm, args[1], () => {
+        fn(node, this.getContentValue(vm, expr)) // 返回了一个全的字符串
+      })
+      return this.getValue(vm, args[1])
+    })
+    fn(node, content)
   },
   updater: {
-    modelUpdater () {
-      
+    modelUpdater (node, value) {
+      node.value = value
     },
     htmlUpdater () {
-      
+
+    },
+    // 处理文本节点的
+    textUpdater (node, value) {
+      node.textContent = value
     }
   },
 }
@@ -112,7 +232,22 @@ class Vue {
     this.$data = options.data
     // 这个根元素  存在 编译模板
     if (this.$el) {
+      // 把数据  全部转化成用Object.definedProperty来定义
+      new Observer(this.$data)
+
+      // 把数据获取操作  vm上的取值操作 都代理到 vm.$data
+      this.proxyVm(this.$data)
+
       new Compiler(this.$el, this)
+    }
+  }
+  proxyVm (data) {
+    for (let key in data) { // {school:{name,age}}
+      Object.defineProperty(this, key, {
+        get () {
+          return data[key] // 进行了转化操作
+        }
+      })
     }
   }
 }

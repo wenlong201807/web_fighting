@@ -13,10 +13,14 @@
     <input type="text" v-model="school.name">
     <div>{{school.name}}</div>
     <div>{{school.age}}</div>
+    <!-- 如果数据不变化，视图就不会刷新 -->
+    {{getName}}
+    <!-- 我们在内部  会匹配 {{}} -->
     <ul>
       <li>1</li>
       <li>2</li>
     </ul>
+    <button v-on:click="change">更新操作</button>
   </div>
 
   <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script> -->
@@ -32,10 +36,14 @@
         }
       },
       methods: {
-
+        change(){
+          this.school.name = '点击更新后的文龙'
+        }
       },
       computed: {
-
+        getName(){
+          return this.school.name + '文龙来测试计算属性的'
+        }
       },
     })
   </script>

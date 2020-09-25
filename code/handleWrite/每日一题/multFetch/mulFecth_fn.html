@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多线程请求</title>
+</head>
+<body>
+  <h2>成功实现</h2>
+  <script>
+    // 测试通过
+    const requestFunc = (urls,max,callback) => {
+      const result = []
+
+      const start = cur => {
+        const allPromise = []
+
+        cur.forEach(url => {
+          allPromise.push(new Promise((resolve) => {
+            fetch(url)
+            .then(res => res.json())
+            .then(data => resolve(data))
+          }))
+        })
+        Promise.all(allPromise).then(res => {
+          result.push(...res)
+
+          if(urls.length){
+            start(urls.splice(0,max))
+          }else{
+            callback(result)
+          }
+        })
+      }
+      start(urls.splice(0,max))
+    }
+
+    requestFunc([
+      'http://localhost:3000/test',
+      'http://localhost:3000/test',
+      'http://localhost:3000/test',
+    ],2,res => console.log(res))
+  </script>
+</body>
+</html>

@@ -106,12 +106,14 @@ class Compiler {
       // console.log(attr) // typpe="text" v-model="school.name" ...
       let { name, value: expr } = attr
       // console.log(name, value) // type text  ,  v-model school.name
-      // 判断是不是指令
-      if (this.isDirective(name)) {
+      // 判断是不是指令 // v-
+      if (this.isDirective(name)) { // 可能的情况 v-model  v-html v-bind
         // console.log(node) // <input type="text" v-model="school.name">
-        let [, directive] = name.split('-')
+        let [, directive] = name.split('-') // 新添的模式  v-on:click
+        let [directiveName,eventName] = directive.split(':')
+        // console.log('****',node, expr,this.vm, eventName)  <button v-on:click="change">更新操作</button> change Vue {$el: "#app", $data: {…}} click
         // 需要调用不同的指令来处理
-        CompileUtil[directive](node, expr, this.vm)
+        CompileUtil[directiveName](node, expr,this.vm, eventName)
       }
     })
   }
@@ -199,6 +201,12 @@ CompileUtil = {
       return this.getValue(vm, args[1])
     })
   },
+  on (node,expr,vm,eventName) {
+    node.addEventListener(eventName, () => {
+      // alert(1) // 测试成功
+      vm[expr].call(vm,e) // this.change
+    })
+  },
   text (node, expr, vm) { // expr => {{a}}  {{b}} {{c}}
     let fn = this.updater['textUpdater']
     let content = expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
@@ -230,10 +238,23 @@ class Vue {
     // this.$el  $data $options
     this.$el = options.el
     this.$data = options.data
+    let computed = options.computed
+    let methods = options.methods
     // 这个根元素  存在 编译模板
     if (this.$el) {
       // 把数据  全部转化成用Object.definedProperty来定义
       new Observer(this.$data)
+
+      // 把数据获取操作  vm上的取值操作 都代理到 vm.$data
+
+      // {{getName}} reduce vm.$data.getName
+      for (let key in computed) { // 有依赖关系，数据
+        Object.defineProperty(this.$data, key, {
+          get: () => {
+            return computed[key].call(this)
+          }
+        })
+      }
 
       // 把数据获取操作  vm上的取值操作 都代理到 vm.$data
       this.proxyVm(this.$data)
@@ -241,9 +262,11 @@ class Vue {
       new Compiler(this.$el, this)
     }
   }
+  // 进步的地方
+  // backbone  set () get ()  // 做的响应，使用时比较复杂，vue在使用上比较方便
   proxyVm (data) {
     for (let key in data) { // {school:{name,age}}
-      Object.defineProperty(this, key, {
+      Object.defineProperty(this, key, {// 实现可以通过vm取到对应的内容
         get () {
           return data[key] // 进行了转化操作
         }

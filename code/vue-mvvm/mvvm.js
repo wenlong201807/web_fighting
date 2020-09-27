@@ -67,7 +67,7 @@ class Observer { // 实现数据劫持功能
         Dep.target && dep.addSub(Dep.target)
         return value
       },
-      set: (newValue)=> { // {{school:{name:'文龙'}}}  // school = {} // 赋值一个对象时再扩展
+      set: (newValue) => { // {{school:{name:'文龙'}}}  // school = {} // 赋值一个对象时再扩展
         if (newValue !== value) { // 小小优化:新值与老值不相等时，才重新赋值  
           this.observer(newValue) // 递归调用，赋值引用类型时，也是响应式的，限于对象，数组没有此功能
           value = newValue
@@ -110,10 +110,10 @@ class Compiler {
       if (this.isDirective(name)) { // 可能的情况 v-model  v-html v-bind
         // console.log(node) // <input type="text" v-model="school.name">
         let [, directive] = name.split('-') // 新添的模式  v-on:click
-        let [directiveName,eventName] = directive.split(':')
+        let [directiveName, eventName] = directive.split(':')
         // console.log('****',node, expr,this.vm, eventName)  <button v-on:click="change">更新操作</button> change Vue {$el: "#app", $data: {…}} click
         // 需要调用不同的指令来处理
-        CompileUtil[directiveName](node, expr,this.vm, eventName)
+        CompileUtil[directiveName](node, expr, this.vm, eventName)
       }
     })
   }
@@ -161,6 +161,7 @@ class Compiler {
 CompileUtil = {
   // 根据表达式取到对应的数据
   getValue (vm, expr) { // vm.$data 'school.name' [school,name]
+    console.log(vm, expr)
     return expr.split('.').reduce((data, current) => {
       return data[current]
     }, vm.$data)
@@ -171,7 +172,7 @@ CompileUtil = {
         return data[current] = value
       }
       return data[current]
-    },vm.$data)
+    }, vm.$data)
     // 更新访问方式  原来访问方式是: vm.$data.school    现在变成 vm.school  即可  去掉了  $data这一层
   },
   // 解析v-model这个指令 // 视图更新则数据更新
@@ -185,14 +186,21 @@ CompileUtil = {
     })
     node.addEventListener('input', e => {
       let value = e.target.value // 获取用户输入的内容
-      this.setValue(vm,expr,value)
+      this.setValue(vm, expr, value)
     })
     let value = this.getValue(vm, expr) // 文龙
     // console.log(node,expr,vm)
     fn(node, value)
   },
-  html () {
+  html (node, expr, vm) { // v-html="message"
+    console.log(node, expr, vm)
     // node.innerHTML = xxx
+    let fn = this.updater['htmlUpdater']
+    new Watcher(vm, expr, (newVal) => {
+      fn(node, newVal)
+    })
+    let value = this.getValue(vm, expr) // message 里面的内容
+    fn(node, value)
   },
   getContentValue (vm, expr) {
     // 遍历表达式 将内容  重新替换成一个完整的内容 返回回去
@@ -201,10 +209,10 @@ CompileUtil = {
       return this.getValue(vm, args[1])
     })
   },
-  on (node,expr,vm,eventName) {
-    node.addEventListener(eventName, () => {
+  on (node, expr, vm, eventName) {
+    node.addEventListener(eventName, (e) => {
       // alert(1) // 测试成功
-      vm[expr].call(vm,e) // this.change
+      vm[expr].call(vm, e) // this.change
     })
   },
   text (node, expr, vm) { // expr => {{a}}  {{b}} {{c}}
@@ -220,12 +228,13 @@ CompileUtil = {
     fn(node, content)
   },
   updater: {
+    htmlUpdater (node, value) { // 此处没有做防  xss攻击
+      node.innerHTML = value
+    },
     modelUpdater (node, value) {
       node.value = value
     },
-    htmlUpdater () {
 
-    },
     // 处理文本节点的
     textUpdater (node, value) {
       node.textContent = value
@@ -256,6 +265,14 @@ class Vue {
         })
       }
 
+      for (let key in methods) { // 遍历方法，成为响应式的
+        Object.defineProperty(this, key, {
+          get () {
+            return methods[key]
+          }
+        })
+      }
+
       // 把数据获取操作  vm上的取值操作 都代理到 vm.$data
       this.proxyVm(this.$data)
 
@@ -269,6 +286,9 @@ class Vue {
       Object.defineProperty(this, key, {// 实现可以通过vm取到对应的内容
         get () {
           return data[key] // 进行了转化操作
+        },
+        set (newVal) { // 设置代理方法
+          data[key] = newVal
         }
       })
     }

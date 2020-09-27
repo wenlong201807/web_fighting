@@ -21,6 +21,8 @@
       <li>2</li>
     </ul>
     <button v-on:click="change">更新操作</button>
+    <div v-html="message"></div>
+
   </div>
 
   <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script> -->
@@ -33,15 +35,16 @@
         school: {
           name: '文龙',
           age: 16
-        }
+        },
+        message: '<h1>我是v-html里面的内容哦</h1>'
       },
       methods: {
-        change(){
+        change() {
           this.school.name = '点击更新后的文龙'
         }
       },
       computed: {
-        getName(){
+        getName() {
           return this.school.name + '文龙来测试计算属性的'
         }
       },

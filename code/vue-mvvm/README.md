@@ -4,4 +4,4 @@
 - v-on
 - 实现监听data
 - 实现监听methods
-- 实现监听计算属性
+- 实现监听computed

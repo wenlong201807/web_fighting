@@ -14,7 +14,7 @@ let len = Math.abs(1 << 31)
 let targetNumber = 1000000
 let i = 0
 while (++i <= len && bb.length<=targetNumber) {
-  let aa = Math.floor(Math.random() * 1000000)
+  let aa = Math.floor(Math.random() * 1000000)   
   let isSix = /^\d{6}$/.test(aa)
   isSix && bb.push(aa)
 }

@@ -1,0 +1,28 @@
+#main{
+  background-color: #EE6A50;
+  width: 30vw;
+  height: 30vh;
+  position: absolute;
+  right: 30vw;
+  bottom: 60vh;
+  opacity: 0.5;
+  overflow: hidden;
+}
+.show{
+  top: -36vh;
+  position: relative;
+  text-align: center;
+  margin-top: 5vh;
+  line-height: 4vh;
+  animation: move 5S linear infinite;
+  z-index: 0;
+  animation-play-state:running;
+}
+@keyframes move{
+  from{
+      bottom: 0;
+  }
+  to{
+      top:0;
+  }
+}

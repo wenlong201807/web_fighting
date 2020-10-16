@@ -43,7 +43,7 @@ class Watcher {
 
 // })
 
-class Observer { // 实现数据劫持功能
+class Observer {  // 实现数据劫持功能
   constructor(data) {
     // console.log(data) // {school: {…}} // 对应data里面定义的所以内容，
     this.observer(data)

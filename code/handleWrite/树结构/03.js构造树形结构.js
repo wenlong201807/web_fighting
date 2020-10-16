@@ -48,5 +48,6 @@ data.forEach(el => {
   parentEl.children = [...(parentEl.children || []), el];
 });
 
-console.log('构造树形结构', root);
+// console.log('构造树形结构', root);
+console.table(root);
 

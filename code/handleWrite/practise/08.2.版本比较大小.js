@@ -1,4 +1,4 @@
-// 参考 上海-吕小慧
+
 
 function compare(a, b) {
   const Mapping = {

@@ -18,4 +18,4 @@ const hh = arr => {
   return result
 }
 
-console.log(hh(arr))
+console.log(hh(arr)) // [1, 2, 3, 4, 5,6, 7, 8, 9]

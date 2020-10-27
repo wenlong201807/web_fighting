@@ -14,7 +14,7 @@
 */
 
 const merger = function (arr, L, M, R) {
-  // 左边数组大小贺右边数组大小
+  // 左边数组大小和右边数组大小
   let left_size = M - L
   let right_size = R - M + 1
   // 声明左边数组贺右边数组

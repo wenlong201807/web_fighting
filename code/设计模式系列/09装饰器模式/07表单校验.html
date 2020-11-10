@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    用户名 <input type="text" id="username">
+    密码 <input type="text" id="password">
+    <button id="submit-btn">提交</button>
+  </div>
+
+  <script>
+    function submit(){
+      let username = document.getElementById('username').value
+      if(!username){
+        return alert('请输入用户名')
+      }
+      if(!username.length <6){
+        return alert('用户名长度不能超过6个字符')
+      }
+      console.log('提交表单')
+    }
+
+    document.getElementById('submit-btn').addEventListener('click',submit)
+  </script>
+</body>
+</html>

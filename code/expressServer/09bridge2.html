@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <ul>
+    <li data-id="1">用户111</li>
+    <li data-id="2">用户222</li>
+  </ul>
+  <p id="content"></p>
+
+  <script>
+    let lis = document.querySelectorAll('li')
+    for(let i=0;i<lis.length;i++){
+      lis[i].addEventListener('click',getUserByIdBridge)
+      // lis[i].addEventListener('click',getUserById)
+    }
+
+    // 我是桥梁哦，很关键的分离器
+    function getUserByIdBridge(){
+      let id = this.dataset.id
+      getUserById(id,function(user){
+        document.getElementById('content').innerHTML = user.name
+      })
+    }
+
+    function getUserById(id,callback){
+      // let id = this.target.dataset.id
+      // let id = event.target.dataset.id
+      let xhr = new XMLHttpRequest()
+      xhr.open('GET','/user/'+id,true)
+      xhr.responseType = 'json'
+      xhr.onreadystatechange = function(){
+        let user = xhr.response
+        if(xhr.readyState === 4 && xhr.status === 200){
+          // document.getElementById('content').innerHTML = user.name
+          callback(user)
+        }      
+      }
+      xhr.send()
+    }
+  </script>
+</body>
+</html>

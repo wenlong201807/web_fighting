@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <p id="number">0</p>
+  <button id="addBtn">新添加到队列中</button>
+  <button id="undoBtn">后退一格</button>
+  <button id="redoBtn">前进一格</button>
+
+  <script>
+    let number = document.getElementById('number')
+    let undoBtn = document.getElementById('undoBtn')
+    let redoBtn = document.getElementById('redoBtn')
+    let worker = {
+      history:[],
+      index:-1,
+      add(){
+        let oldVal = isNaN(number.innerHTML) ? 0 : Number(number.innerHTML)
+        let newVal = oldVal+1
+        worker.history.push(newVal)
+        worker.index = worker.history.length -1
+        number.innerHTML = newVal
+      },
+      undo(){
+        if(worker.index>0){
+          worker.index--
+          number.innerHTML = worker.history[worker.index]
+        }      
+      },
+      redo(){
+        if(worker.index < worker.history.length-1){
+          worker.index++
+          number.innerHTML = worker.history[worker.index]
+        }
+      },
+    }
+
+    class AddCommand{
+      constructor(receiver){
+        this.receiver = receiver
+      }
+      execute(){
+        this.receiver.add()
+      }
+    }
+
+    class UndoCommand{
+      constructor(receiver){
+        this.receiver = receiver
+      }
+      execute(){
+        this.receiver.undo()
+      }
+    }
+
+    class RedoCommand{
+      constructor(receiver){
+        this.receiver = receiver
+      }
+      execute(){
+        this.receiver.redo()
+      }
+    }
+
+    let addCommand = new AddCommand(worker)
+    let undoCommand = new UndoCommand(worker)
+    let redoCommand = new RedoCommand(worker)
+    document.getElementById('addBtn').addEventListener('click',()=>addCommand.execute())
+    document.getElementById('undoBtn').addEventListener('click',()=>undoCommand.execute())
+    document.getElementById('redoBtn').addEventListener('click',()=>redoCommand.execute())
+  </script>
+</body>
+</html>

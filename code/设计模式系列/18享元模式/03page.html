@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分页</title>
+</head>
+<body>
+  <ul id="news"></ul>
+
+  <button id="nextPage" onclick="goNext()">下一页</button>
+  <script>
+    let list = []
+    for(let i=0;i<20;i++){
+      list[i] = '模拟数据'+(i+1)
+    }
+    let pageNum =0
+    let pageSize = 5
+    let news = document.getElementById('news')
+    for(let i=0;i<list.length;i++){
+      let li = document.createElement('li')
+      li.innerHTML = '模拟数据'+(i+1)
+      li.style.display = 'none'
+      news.appendChild(li)
+    }
+
+    function goNext(){
+      pageNum++
+      let start = (pageNum-1)*pageSize
+      let lis = document.getElementsByTagName('li')
+      for(let i=0;i<lis.length;i++){
+        let li = lis[i]
+        if(i>=start && i<start+pageSize){
+          li.style.display = 'block'
+        }else{
+          li.style.display = 'none'
+        }
+      }
+    }
+    goNext()
+  </script>
+</body>
+</html>

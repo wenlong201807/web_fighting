@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .wenlong{
+      color: red;
+    }
+    .zhu{
+      color: rgb(0, 255, 64);
+    }
+    .good{
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script>
+    class ReactElement{
+      constructor(type,props){
+        this.type = type // 元素的类型
+        this.props = props // 属性对象  其中子节点也是属于属性对象中的一个属性，
+        // 这个属性叫做  children  很特殊的一个
+      }
+    }
+
+    function createElement(type,props={},...children){
+      // 创建元素的入参中，有三个，其中第三个是元素的子节点，是不属于元素的属性节点的，
+      // 这与创建ReactElement  的元素的属性有些差异，需要自个抹平
+      return new ReactElement(type,{...props,children:children.length==1?children[0]:children})
+    }
+
+    let rootElement = createElement(
+      'span',
+      {className:'wenlong'},
+      // null,
+      'wenlong',
+      createElement(
+        'span',
+        {className:'zhu'},
+        // null,
+        'zhu',
+        createElement(
+          'span',
+          {className:'good'},
+          // null,
+          '666'
+        )
+      )
+    )
+
+    function render(element,container){
+      if(typeof element === 'string') return container.appendChild(document.createTextNode(element))
+      let {type,props}= element
+      let domElement = document.createElement(type) // 创建一个真实的DOM节点
+      for(let attr in props){
+        if( attr === 'children'){
+          // children 可能是一个对象，也可能就是一个字符串，或者是一个数组，也可能是一个组件(大写字母开头)
+          if(typeof props[attr] === 'object'){ // 非文本节点在这里处理
+            props[attr].forEach(item => {
+              if(typeof item == 'object'){          
+                render(item,domElement)
+              }else{
+                domElement.appendChild(document.createTextNode(item))
+              }
+            })
+          }else{
+            domElement.appendChild(document.createTextNode(props[attr]))
+          }
+        }else if(attr === 'className'){ // react中的虚拟节点元素的属性，与真实DOM节点中的属性，有差异性的处理
+          domElement.setAttribute('class',props[attr])
+        }else{ // 虚拟节点属性与真实节点属性一致的化，批量处理转化
+          domElement.setAttribute(attr,props[attr])
+        }
+      }
+
+      // 挂在到真实DOM上
+      container.appendChild(domElement)
+    }
+
+    render(rootElement,document.querySelector('#root'))
+  </script>
+</body>
+</html>

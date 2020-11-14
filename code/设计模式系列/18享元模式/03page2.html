@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分页</title>
+</head>
+<body>
+  <ul id="news"></ul>
+
+  <button id="nextPage" onclick="goNext()">下一页</button>
+  <script>
+    let list = []
+    for(let i=0;i<20;i++){
+      list[i] = '模拟数据'+(i+1)
+    }
+
+    let getLi = (
+      function(){
+        let lis = []
+        return function(){
+          let element
+          if(lis.length < 5){
+            element = document.createElement('li')
+            lis.push(element)
+          }else{
+            element = lis.shift() // 从左侧删除
+            lis.push(element) // 添加到右侧
+          }
+          return element
+        }
+      }
+    )();
+
+    let pageNum =0
+    let pageSize = 5
+    let news = document.getElementById('news')
+
+    // for(let i=0;i<list.length;i++){
+    //   let li = document.createElement('li')
+    //   li.innerHTML = '模拟数据'+(i+1)
+    //   li.style.display = 'none'
+    //   news.appendChild(li)
+    // }
+
+    function goNext(){
+      pageNum++
+      let start = (pageNum-1)*pageSize
+      // let lis = document.getElementsByTagName('li')
+      for(let i=0;i<5;i++){
+        let element = getLi()
+        element.innerHTML = list[start+i]
+        news.appendChild(element)
+      }
+    }
+    goNext() // 首次加载
+  </script>
+</body>
+</html>

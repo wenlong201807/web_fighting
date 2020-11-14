@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    *{
+      padding: 0;
+      margin: 0;
+    }
+    canvas{
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="900" height="700"></canvas>
+
+  <script>
+    function Positon(x,y){
+      this.x = x
+      this.y = y
+    }
+
+    function CircleColor(color){
+      this.color = color
+    }
+
+    // 分离变化：将同一个物体的不同维度的信息 分离开
+    function Circle(x,y,circleColor){
+      this.positon = new Positon(x,y)
+      this.circleColor = new CircleColor(circleColor)
+    }
+
+    Circle.prototype.render = function(){
+      let canvas = document.getElementById('canvas')
+      let ctx = canvas.getContext('2d')
+      ctx.beginPath()
+      ctx.arc(this.positon.x,this.positon.y,100,0,2*Math.PI)
+      ctx.fillStyle = this.circleColor.color
+      ctx.fill()
+    }
+
+    let c = new Circle(200,200,'red')
+    c.render()
+  </script>
+</body>
+</html>

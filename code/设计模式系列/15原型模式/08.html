@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ss</title>
+  <style>
+    *{
+      padding:0;margin:0;
+    }
+    #canvas{
+      border:1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="500"></canvas>
+<script>
+var canvas = document.getElementById('canvas')
+console.log(canvas)
+var ctx = canvas.getContext('2d')
+var circle = []
+function getRandomColor(){
+  let rand = Math.floor(Math.random() * 0xFFFFFF).toString(16)
+  if(rand.length===6){
+    return '#'+rand
+  }else{
+    return getRandomColor()
+  }
+}
+
+function Circle(x,y,radius){
+  this.x = x
+  this.y = y
+  this.radius = radius
+  circle.push(this)
+}
+
+Circle.prototype.update = function(){
+  this.radius --
+  if(this.radius>0) return true
+}
+
+Circle.prototype.render = function(){
+  ctx.beginPath()
+  ctx.arc(this.x,this.y,this.radius,0,2*Math.PI)
+  ctx.fillStyle = getRandomColor()
+  ctx.fill()
+}
+
+canvas.onmousemove = function(event){
+  new Circle(event.clientX,event.ClientY,50)
+}
+setInterval(() => {
+  ctx.clearRect(0,0,1000,600)
+  circle.forEach(circle => circle.update() && circle.render())
+}, 100);
+
+
+// canvas.addEventListener('mousemove',(event)=>{
+//   console.log(66)
+//   let c = new Circle(event.clientX,event.ClientY,50)
+//   c.render()
+// })
+</script>
+</body>
+</html>

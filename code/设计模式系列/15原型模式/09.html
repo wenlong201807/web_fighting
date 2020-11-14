@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ss</title>
+  <style>
+    *{
+      padding:0;margin:0;
+    }
+    #canvas{
+      border:1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="600" height="500"></canvas>
+<script>
+
+var canvas = document.getElementById("canvas");
+//2d绘图版
+var context = canvas.getContext("2d");
+//球运行的速度
+var ballSpeed = 4;
+
+
+
+//字弹对象
+var ball = function (x, y, radius, color) {
+  this.x = x;
+  this.y = y;
+  this.radius = radius;
+  this.color = color;
+  //绘制字弹
+  this.draw = function () {
+    //清空画板
+    context.save();
+    context.beginPath();
+    context.strokeStyle = this.color;
+    context.fillStyle = this.color;
+    context.lineWidth = 5;
+    context.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
+    context.closePath();
+    context.fill();
+    context.stroke();
+  }
+}
+
+
+//中心点位置
+var centerX = canvas.width / 2;
+var centerY = canvas.height / 2;
+
+//创建球
+var myBall = new ball(centerX, centerY, 10, "ff0000")
+myBall.draw();
+
+var mouseX = centerX;
+var mouseY = centerY;
+//添加按键事件
+canvas.addEventListener("mousemove", onMouseMove, false);
+
+//记录鼠标移动到的位值
+function onMouseMove (evt) {
+  mouseX = evt.layerX;
+  mouseY = evt.layerY;
+}
+
+//动画处理
+var drawAsync = eval(Jscex.compile("async", function () {
+
+  while (true) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    //计算夹角
+    var dx = mouseX - myBall.x;
+    var dy = mouseY - myBall.y;
+    var angle = Math.atan2(dy, dx);
+
+    //角速度
+    myBall.x += Math.cos(angle) * ballSpeed;
+    myBall.y += Math.sin(angle) * ballSpeed;
+    //重绘球
+    myBall.draw();
+    $await(Jscex.Async.sleep(1000 / 60));
+  }
+
+}));
+drawAsync().start();
+</script>
+</body>
+</html>

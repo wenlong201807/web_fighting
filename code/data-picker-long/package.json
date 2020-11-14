@@ -1,0 +1,20 @@
+{
+  "name": "data-picker-long",
+  "version": "1.0.0",
+  "description": "全局安装  npm i @vue/cli  @vue/cli-service-global -global\r 然后  新建一个app.vue  最简单的即可\r 进入对应文件夹，即可快速启动vue项目  vue serve",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.1.0",
+    "stylus": "^0.54.8",
+    "stylus-loader": "^4.3.0",
+    "webpack": "^5.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,7 +1,4 @@
 
-
-// 观察者，小名：发布订阅   有观察者和被观察者
-
 class Dep {
   constructor() {
     this.subs = [] // 存放所有的Watcher
@@ -16,7 +13,9 @@ class Dep {
     })
   }
 }
+
 class Watcher {
+  // vm.$watch(vm, 'school.name', (newVal) => {})
   constructor(vm, expr, cb) {
     this.vm = vm
     this.expr = expr
@@ -38,10 +37,6 @@ class Watcher {
     }
   }
 }
-
-// vm.$watch(vm, 'school.name', (newVal) => {
-
-// })
 
 class Observer {  // 实现数据劫持功能
   constructor(data) {
@@ -79,7 +74,6 @@ class Observer {  // 实现数据劫持功能
 }
 
 // 基类  调度
-
 class Compiler {
   constructor(el, vm) {
     // 判断el属性， 是不是一个元素，如果不是元素 那就获取它
